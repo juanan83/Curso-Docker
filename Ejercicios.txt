@@ -1,0 +1,41 @@
+apt-get update
+apt-get install     apt-transport-https     ca-certificates     curl     software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+apt-get update
+apt-get install docker-ce
+usermod -aG docker linux
+
+Ejercicio 2: Construye una jaula en la que tan sólo puedan ejecutarse los comandos bash, ls, ps, mount y mkdir
+#!/bin/bash
+
+which=$(which $1)
+mkdir -p $2/$(dirname $which)
+cp $which $2/$which
+ldd $which | grep "/"  | cut -d ">" -f2 | cut -d"(" -f1 | tr -d " \t" | while read linea;
+do
+    mkdir -p $2$(dirname $linea)
+    cp $linea $2$linea
+done
+
+Ejercicio 3: Edita tu sources.list.d/ para añadir los repositorios de la última versión de firefox, grafana.
+Si necesitas refuerzo en shellscripting o quieres hacer más cosas,  haz en casa un shellscript "volcador" de datos de DNS o bien un identificador de errores en red.* pregunta al profe
+
+Propuesta de proyecto personal chulo de bootstrapping decente:
+
+    3)  Crea un script de bootstrapping que pueda descargar un archivo  especificado en una variable de entorno y desplegarlo en la raíz del  servidor web. Con ello conseguiremos un contenedor "wildcard" que nos  permita ejecutar cualquier app PHP+MySQL+1+1+1
+
+    Que soporte el desempaquetado de:
+
+    tar.gz
+
+    tar.bz2
+
+    tar.xz
+
+    zip
+
+    git
+
