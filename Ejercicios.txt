@@ -174,3 +174,26 @@ for i in {1..5}; do docker-machine create -d virtualbox --virtualbox-boot2docker
 
 function nomachine { eval $(env | awk -F= '/^DOCKER/ {print "unset "$1}'); }
 
+DOCKER SWARM
+
+
+Generamos un token para el discovery:
+
+docker run [ --rm ] swarm create
+
+Creamos un master:
+
+docker-machine create   --swarm --swarm-master --swarm-discovery token://PONAQUITUTOKEN abejita1
+
+Creamos workers:
+
+for i in {2..5}; do docker-machine create   --swarm  --swarm-discovery token://PONAQUITUTOKEN abejita$i; done
+
+Configuramos nuestro entorno para gestionar el swarm:
+
+eval $(docker-machine env --swarm abejita1)
+
+----------------------------------------------------------------------------------------------
+
+docker service create --name miweb --replicas 1 --port 80:80 nginx
+
