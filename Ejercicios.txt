@@ -39,3 +39,26 @@ Propuesta de proyecto personal chulo de bootstrapping decente:
 
     git
 
+Si necesitas refuerzo en shellscripting o quieres hacer más cosas,  haz en casa un shellscript "volcador" de datos de DNS o bien un identificador de errores en red.* pregunta al profe
+
+Lanza: ubuntu, centos, debian, php:apache
+Utiliza "-d" para lo que sean servicios.
+Utiliza ctrl +PQ para desconectar de un contenedor sin finalizarlo
+Reconecta a un contenedor ( docker attach )
+Ejecuta un binario dentro de un contenedor en ejecución ( docker exec )
+Busca una plataforma/aplicación compleja y lánzala con Docker
+
+    docker run
+
+    -d daemon
+
+    -t terminal
+
+    -i interactive
+
+    -p puertoexterior:puertodocker
+
+    -v /ruta/local;/ruta/dentro/docker
+
+    --name nombrecontenedor
+
