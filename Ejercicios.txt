@@ -1,3 +1,5 @@
+INSTALACIÓN DOCKER DESDE REPOSITORIO OFICIAL:
+
 apt-get update
 apt-get install     apt-transport-https     ca-certificates     curl     software-properties-common
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -8,7 +10,7 @@ apt-get update
 apt-get install docker-ce
 usermod -aG docker linux
 
-Ejercicio 2: Construye una jaula en la que tan sólo puedan ejecutarse los comandos bash, ls, ps, mount y mkdir
+EJERCICIO 2: Construye una jaula en la que tan sólo puedan ejecutarse los comandos bash, ls, ps, mount y mkdir
 #!/bin/bash
 
 which=$(which $1)
@@ -20,7 +22,7 @@ do
     cp $linea $2$linea
 done
 
-Ejercicio 3: Edita tu sources.list.d/ para añadir los repositorios de la última versión de firefox, grafana.
+EJERCICIO 3: Edita tu sources.list.d/ para añadir los repositorios de la última versión de firefox, grafana.
 Si necesitas refuerzo en shellscripting o quieres hacer más cosas,  haz en casa un shellscript "volcador" de datos de DNS o bien un identificador de errores en red.* pregunta al profe
 
 Propuesta de proyecto personal chulo de bootstrapping decente:
@@ -113,3 +115,60 @@ services:
        WORDPRESS_DB_PASSWORD: wordpress
 volumes:
     db_data:
+
+--- Soluciones Wordpres + BBDD persistenteS:
+
+version: '3'
+
+services:
+
+  wordpress:
+    image: wordpress
+    ports:
+      - 8080:80
+    environment:
+      WORDPRESS_DB_PASSWORD: example
+    volumes:
+      - disk_wp:/var/www/html
+
+  mysql:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    volumes:
+      - disk_mysql_wp:/var/lib/mysql
+
+volumes:
+  disk_wp:
+  disk_mysql_wp:
+
+version: '3'
+
+services:
+   db:
+     image: mysql:5.7
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: wordpress
+       MYSQL_DATABASE: wordpress
+
+   wordpress:
+     depends_on:
+       - db
+     image: wordpress:latest
+     volumes:
+        - wp_data:/var/www/html
+     ports:
+       - "8080:80"
+     restart: always
+     environment:
+       WORDPRESS_DB_HOST: db:3306
+       WORDPRESS_DB_PASSWORD: wordpress
+volumes:
+    db_data:
+    wp_data:
+
+for i in {1..5}; do docker-machine create -d virtualbox --virtualbox-boot2docker-url http://192.168.5.1/boot2docker.iso    nodo$i; done
+
