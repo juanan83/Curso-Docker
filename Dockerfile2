@@ -1,0 +1,4 @@
+FROM debian:wheezy
+RUN apt-get update && apt-get install -y man funny-manpages && rm -rf /var/cache/apt /var/lib/{apt,dpkg}
+ENTRYPOINT ["/usr/bin/man"]
+CMD ["man"]
