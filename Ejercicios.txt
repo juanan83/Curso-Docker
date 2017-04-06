@@ -62,3 +62,38 @@ Busca una plataforma/aplicación compleja y lánzala con Docker
 
     --name nombrecontenedor
 
+apt install bridge-utils
+
+ip addr show dev eno1
+2: eno1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 88:51:fb:53:54:be brd ff:ff:ff:ff:ff:ff
+    inet 192.168.5.1/24 brd 192.168.5.255 scope global eno1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::2e55:f6a1:20dc:f2aa/64 scope link 
+       valid_lft forever preferred_lft forever
+ip addr del 192.168.5.1/24 dev eno1
+docker network create --attachable [ --driver bridge ] --subnet 192.168.5.1/24 --ip-range 192.168.5.24/30 mibridge
+brctl show
+
+# Lanzamos un contenedor de mysql
+docker run -d --name mysql -e MYSQL_RANDOM_ROOT_PASSWORD=yes -e MYSQL_DATABASE=wordpress -e MYSQL_USER=wordpress -e MYSQL_PASSWORD=wordpresito library/mysql
+
+# Validamos que conecta:
+mysql -uwordpress -pwordpresito -h$(docker inspect mysql -f '{{.NetworkSettings.IPAddress}}') wordpress
+
+# Lanzamos la imágen oficial de wordpress:
+docker run --name some-wordpress -e WORDPRESS_DB_USER=wordpress -e WORDPRESS_DB_PASSWORD=wordpresito --link mysql:mysql -p 8080:80 -d wordpress
+
+----------------------------------------------------------------------------------
+DOCKER COMPOSE:
+
+version: '2'
+
+services:
+  worker:
+    image: jordan0day/folding-at-home
+  webito:
+    image: library/httpd
+    ports:
+      - 80
+
