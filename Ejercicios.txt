@@ -172,3 +172,5 @@ volumes:
 
 for i in {1..5}; do docker-machine create -d virtualbox --virtualbox-boot2docker-url http://192.168.5.1/boot2docker.iso    nodo$i; done
 
+function nomachine { eval $(env | awk -F= '/^DOCKER/ {print "unset "$1}'); }
+
