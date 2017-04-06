@@ -1,0 +1,74 @@
+SYSTEMD:
+
+1) Edita tu "docker.service" (idealmente dentro de /etc/systemd/system ..., si no está, modifica directamente /lib/systemd/system .... ) y añade EnvironmentFile=/etc/default/docker-systemd en la sección [service]
+2) Modifica la linea ExecStart y añade $DOCKER_OPTS al final
+3) Crea el archivo /etc/default/docker-systemd con los parámetros que quieras de docker daemon:
+# Por ejemplo:
+DOCKER_OPTS=--bip 10.20.30.1/24 --dns 10.20.30.1
+
+4) systemctl daemon-reload
+
+5) service docker restart
+
+DNS:
+
+0) instala bind9
+
+1) Machaca el archivo /etc/bind/named.conf.options con esto:
+
+options {
+    directory "/var/cache/bind";
+
+    // If there is a firewall between you and nameservers you want
+    // to talk to, you may need to fix the firewall to allow multiple
+    // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+    // If your ISP provided one or more IP addresses for stable 
+    // nameservers, you probably want to use them as forwarders.  
+    // Uncomment the following block, and insert the addresses replacing 
+    // the all-0's placeholder.
+
+    forwarders {
+         8.8.8.8;
+         8.8.4.4;
+    };
+
+    //========================================================================
+    // If BIND logs error messages about the root key being expired,
+    // you will need to update your keys.  See https://www.isc.org/bind-keys
+    //========================================================================
+    dnssec-validation no;    
+    auth-nxdomain no;    # conform to RFC1035
+    listen-on-v6 { any; };
+};
+
+2) Reinicia bind9
+
+3) Desactiva systemd-resolved:
+
+service systemd-resolved stop
+systemctl disable systemd-resolved
+
+4) Reconfigura nsswitch:
+
+Edita /etc/nsswitch.conf :
+
+
+hosts:          files dns
+
+(elimina el resto de cosas de la linea)
+
+5) Suprime dnsmasq
+
+mv /usr/sbin/dnsmasq ~
+
+6) mata dnsmasq
+
+7) reinicia network-manager
+
+8) borra el link "/etc/resolv.conf"
+
+9) Edita tu /etc/resolv.conf y mete de dns 127.0.0.1
+nameserver 127.0.0.1
+
+10) chattr +i /etc/resolv.conf
