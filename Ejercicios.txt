@@ -262,3 +262,11 @@ zone "consul" IN {
 service bind9 restart
 -------------------------------------
 
+Docker registry:
+
+https://docs.docker.com/registry/
+
+Ver ejemplo de ejecución, push y pull de imgs hacia nuestro registry privado.
+
+Para poder autenticar, ver: https://docs.docker.com/registry/spec/auth/token/
+
