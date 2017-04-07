@@ -218,4 +218,3 @@ p  8302:8302 -p 8400:8400 -p 8500:8500  -p 8600:53/udp  --name node2 -h  node2 p
 
 # Nodo 3:
 docker  run -d -p 8301:8301 -p 8301:8301/udp -p 8302:8302/udp -p 8302:8302 -p  8300:8300 -p 8400:8400 -p 8500:8500 -p 8600:53/udp  --name node3 -h  node3 progrium/consul -server -advertise 192.168.99.102 -join  192.168.99.100
-
